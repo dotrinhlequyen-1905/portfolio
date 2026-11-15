@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Do Trinh Le Quyen — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a single-column test report — sticky run summary up top, then evidence sections, each with a mono label column on wide screens. */
+:root {
+  --paper: #f4f6f8;
+  --surface: #ffffff;
+  --ink: #16212e;
+  --muted: #5a6876;
+  --rule: #d8dee5;
+  --accent: #0f5e8c;
+  --accent-soft: #e3eef6;
+  --pass: #1d7a46;
+  --pass-soft: #e2f3e9;
+  --fail: #b3362b;
+  --fail-soft: #f9e4e1;
+  --warn: #8a5a00;
+  --warn-soft: #fbefd6;
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f151c; --surface: #16202a; --ink: #e6ecf2; --muted: #9aa8b6; --rule: #2a3744;
+    --accent: #6cb6e4; --accent-soft: #17303f; --pass: #5fcf8e; --pass-soft: #163325;
+    --fail: #f0857a; --fail-soft: #3a1d1a; --warn: #e8b85a; --warn-soft: #36290f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f151c; --surface: #16202a; --ink: #e6ecf2; --muted: #9aa8b6; --rule: #2a3744;
+  --accent: #6cb6e4; --accent-soft: #17303f; --pass: #5fcf8e; --pass-soft: #163325;
+  --fail: #f0857a; --fail-soft: #3a1d1a; --warn: #e8b85a; --warn-soft: #36290f;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.6 var(--body); }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); letter-spacing: -0.01em; }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.2rem; }
+p { margin: 0; max-width: 68ch; }
+.num, .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* header */
+header { padding: 56px 0 28px; border-bottom: 1px solid var(--rule); }
+.role { font-family: var(--mono); font-size: 0.9rem; color: var(--accent); margin-bottom: 12px; }
+.lede { margin-top: 16px; font-size: 1.1rem; color: var(--muted); }
+.links { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 22px; font-size: 0.95rem; }
+.links span { color: var(--muted); }
+
+/* run summary strip */
+.run { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; margin: 32px 0 8px; }
+.run div { background: var(--surface); padding: 16px 18px; }
+.run b { display: block; font-family: var(--mono); font-size: 1.3rem; white-space: nowrap; font-weight: 500; font-variant-numeric: tabular-nums; }
+.run small { color: var(--muted); font-size: 0.85rem; line-height: 1.4; display: block; }
+.pytest { font-family: var(--mono); font-size: 0.82rem; color: var(--muted); margin-top: 10px; overflow-x: auto; white-space: nowrap; }
+.pytest .ok { color: var(--pass); }
+
+/* sections */
+section { padding: 52px 0; border-bottom: 1px solid var(--rule); }
+.sec { display: grid; grid-template-columns: 170px 1fr; gap: 28px; }
+.tag { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); padding-top: 8px; }
+.stack { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.note { font-size: 0.92rem; color: var(--muted); }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 20px 22px; }
+ul.plain { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; max-width: 72ch; }
+
+/* screenshots */
+.shots { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
+.shots figure { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.shots figure:first-child { grid-row: span 2; }
+.shots img { width: 100%; max-width: 100%; height: auto; display: block; border: 1px solid var(--rule); border-radius: 6px; }
+figcaption { font-size: 0.82rem; color: var(--muted); }
+
+/* chart */
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 560px; height: auto; }
+.chart text { font-family: var(--mono); font-size: 12px; fill: var(--muted); }
+.chart .lab { font-family: var(--body); fill: var(--ink); font-size: 13px; }
+.chart .after { fill: var(--accent); font-weight: 500; }
+.legend { display: flex; gap: 18px; font-size: 0.85rem; color: var(--muted); flex-wrap: wrap; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+/* tables */
+.tbl { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 600; font-size: 0.8rem; color: var(--muted); background: var(--paper); }
+tr:last-child td { border-bottom: 0; }
+td.mono { white-space: nowrap; }
+td.n, th.n { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pill { display: inline-block; font-family: var(--mono); font-size: 0.75rem; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+.pill.pass { background: var(--pass-soft); color: var(--pass); }
+.pill.open { background: var(--warn-soft); color: var(--warn); }
+.pill.fail { background: var(--fail-soft); color: var(--fail); }
+
+/* two columns of facts */
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.facts .card h3 { font-size: 1.05rem; margin-bottom: 8px; }
+.facts .card p { font-size: 0.93rem; color: var(--muted); }
+.big { font-family: var(--mono); font-size: 1.5rem; color: var(--ink); display: block; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+
+.flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-family: var(--mono); font-size: 0.82rem; }
+.flow span { background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 4px; }
+.flow i { color: var(--muted); font-style: normal; }
+
+.certs { display: flex; flex-direction: column; gap: 10px; }
+.cert { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.cert:last-child { border-bottom: 0; }
+.cert small { color: var(--muted); display: block; }
+
+footer { padding: 36px 0 56px; color: var(--muted); font-size: 0.9rem; }
+
+@media (max-width: 760px) {
+  .sec { grid-template-columns: 1fr; gap: 10px; }
+  .tag { padding-top: 0; }
+  .shots { grid-template-columns: 1fr; }
+  .shots figure:first-child { grid-row: auto; }
+  header { padding-top: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="role">AI Testing · QA · Business Analysis</div>
+    <h1>Do Trinh Le Quyen</h1>
+    <p class="lede">Fourth-year Software Engineering student at Phenikaa University. I build and test AI features: I designed the evaluation for an AI CV–JD matching engine, used LLMs to create and check test data, and tested the whole platform with automated API and browser tests.</p>
+    <div class="links">
+      <a href="https://github.com/dotrinhlequyen-1905/JobMatch">JobMatch on GitHub</a>
+      <a href="https://github.com/dotrinhlequyen-1905">github.com/dotrinhlequyen-1905</a>
+      <span>dotrinhlequyen@gmail.com</span>
+      <span>(+84) 971 961 050</span>
+      <span>Hanoi, Vietnam</span>
+    </div>
+
+    <div class="run" aria-label="Project results at a glance">
+      <div><b>0.63 → 0.84</b><small>NDCG@10 of semantic search after fine-tuning</small></div>
+      <div><b>145 / 145</b><small>automated API tests passed</small></div>
+      <div><b>11 / 11</b><small>browser scenarios passed (Playwright)</small></div>
+      <div><b>9 / 7</b><small>defects found / fixed and re-tested</small></div>
+      <div><b>0.951</b><small>skill-extraction F1 on 200 PDF/DOCX files</small></div>
+    </div>
+    <div class="pytest">$ pytest backend/tests -q &nbsp;→&nbsp; <span class="ok">145 passed</span>, 0 failed in 104.90s &nbsp;·&nbsp; run on 2026-10-30, fresh SQLite database</div>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="wrap sec">
+    <div class="tag">01 / Project</div>
+    <div class="stack">
+      <h2>JobMatch: a recruitment platform that matches CVs to jobs by meaning</h2>
+      <p>Keyword filters miss good candidates: a CV that says “ReactJS” can fail a job asking for “React”. JobMatch ranks CVs and jobs with a fine-tuned multilingual-E5 embedding model plus a skill and experience score, and explains every match with matched and missing skills. Around that engine it runs the full hiring flow: applications, interview booking and VietQR payments, for candidates, recruiters and admins.</p>
+      <div class="flow" aria-label="Matching pipeline">
+        <span>CV upload (PDF/DOCX)</span><i>→</i><span>parser</span><i>→</i><span>profile</span><i>→</i><span>E5 embedding</span><i>→</i><span>vector search</span><i>→</i><span>hybrid score</span><i>→</i><span>skill-gap explanation</span>
+      </div>
+      <div class="shots">
+        <figure>
+          <img src="img/job-match.jpg" alt="Job detail page showing a 100% match with semantic, skill and experience bars and matched skills" width="1200" height="675">
+          <figcaption>Candidate view: match score broken into semantic similarity, skill coverage and experience, with matched and missing skills.</figcaption>
+        </figure>
+        <figure>
+          <img src="img/hr-ai-candidates.jpg" alt="Recruiter view listing AI-ranked candidates with match percentages and missing skills" width="1200" height="675">
+          <figcaption>Recruiter view: candidates ranked from the whole CV pool, each with the skill it is missing.</figcaption>
+        </figure>
+        <figure>
+          <img src="img/cv-evaluation.jpg" alt="CV evaluation page showing a completeness score of 85 out of 100 and detected sections" width="1200" height="675">
+          <figcaption>CV completeness check (Premium), scored by a rubric and kept separate from job fit.</figcaption>
+        </figure>
+      </div>
+      <p class="note">My role: individual specialization project. I wrote the requirements, designed the system and UI, built the AI module and the platform, and planned and ran the testing. Stack: Python, FastAPI, React, PostgreSQL/pgvector, Celery, Docker, GitHub Actions.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap sec">
+    <div class="tag">02 / AI evaluation</div>
+    <div class="stack">
+      <h2>Fine-tuning lifted ranking quality on every test setting</h2>
+      <p>I compared the base E5 model with the fine-tuned one on four evaluation settings I built, using NDCG@10 as the main metric (graded relevance 0/1/2, top-10 results). BM25 and skill-only ranking were the baselines.</p>
+      <div class="card chart">
+        <svg viewBox="0 0 680 222" role="img" aria-label="NDCG@10 before and after fine-tuning: template JD to CV 0.630 to 0.842; template CV to JD 0.636 to 0.845; LLM-rewritten CVs 0.596 to 0.808; LLM-relabeled pairs 0.922 to 0.972">
+          <g stroke="var(--rule)" stroke-width="1">
+            <line x1="160" y1="20" x2="160" y2="186"/><line x1="252" y1="20" x2="252" y2="186"/><line x1="344" y1="20" x2="344" y2="186"/>
+            <line x1="436" y1="20" x2="436" y2="186"/><line x1="528" y1="20" x2="528" y2="186"/><line x1="620" y1="20" x2="620" y2="186"/>
+          </g>
+          <g text-anchor="middle">
+            <text x="160" y="206">0.5</text><text x="252" y="206">0.6</text><text x="344" y="206">0.7</text>
+            <text x="436" y="206">0.8</text><text x="528" y="206">0.9</text><text x="620" y="206">1.0</text>
+          </g>
+          <text x="390" y="221" text-anchor="middle">NDCG@10 (axis starts at 0.5)</text>
+          <g class="lab">
+            <text class="lab" x="0" y="44">Template · JD→CV</text>
+            <text class="lab" x="0" y="84">Template · CV→JD</text>
+            <text class="lab" x="0" y="124">LLM-rewritten CVs</text>
+            <text class="lab" x="0" y="164">LLM-relabeled pairs</text>
+          </g>
+          <g stroke="var(--accent)" stroke-width="3" opacity="0.35">
+            <line x1="280" y1="40" x2="475" y2="40"/><line x1="285" y1="80" x2="477" y2="80"/>
+            <line x1="248" y1="120" x2="443" y2="120"/><line x1="548" y1="160" x2="594" y2="160"/>
+          </g>
+          <g fill="var(--muted)">
+            <circle cx="280" cy="40" r="6"/><circle cx="285" cy="80" r="6"/><circle cx="248" cy="120" r="6"/><circle cx="548" cy="160" r="6"/>
+          </g>
+          <g fill="var(--accent)">
+            <circle cx="475" cy="40" r="7"/><circle cx="477" cy="80" r="7"/><circle cx="443" cy="120" r="7"/><circle cx="594" cy="160" r="7"/>
+          </g>
+          <g text-anchor="end">
+            <text x="270" y="44">0.630</text><text x="275" y="84">0.636</text><text x="238" y="124">0.596</text><text x="538" y="164">0.922</text>
+          </g>
+          <g>
+            <text class="after" x="486" y="44">0.842</text><text class="after" x="488" y="84">0.845</text><text class="after" x="454" y="124">0.808</text><text class="after" x="605" y="164">0.972</text>
+          </g>
+        </svg>
+        <div class="legend"><span><i class="dot" style="background:var(--muted)"></i>Base multilingual-E5</span><span><i class="dot" style="background:var(--accent)"></i>Fine-tuned E5 (2,803 clean training triplets)</span></div>
+      </div>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Test setting</th><th>Size</th><th>What it checks</th></tr></thead>
+          <tbody>
+            <tr><td>Template test set</td><td class="mono">197 JD × 591 CV</td><td>Ranking over the full corpus in both directions</td></tr>
+            <tr><td>LLM-rewritten CVs</td><td class="mono">188 JD × 281 CV</td><td>End to end: text → parser → profile → ranking, with natural wording</td></tr>
+            <tr><td>LLM-relabeled pairs</td><td class="mono">50 JD × 10 CV</td><td>Order within small sets, with labels not derived from skill rules</td></tr>
+            <tr><td>Parser test files</td><td class="mono">200 files</td><td>67 single-column PDF, 67 two-column PDF, 66 DOCX with answer keys</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="plain">
+        <li>Hybrid scoring (semantic + skill coverage + experience) reached NDCG@10 0.905, MRR@10 0.987 and Recall@50 0.9997 on the template set. Weights were tuned on the validation set only.</li>
+        <li>A finding I kept in the report: the fine-tuned model improved semantic search, but the base model with hybrid scoring scored slightly higher NDCG@10 (0.917). Better embeddings did not guarantee the best final ranking.</li>
+        <li>Parser: skill recall 0.995, F1 0.951. Error analysis showed lower precision from generic words read as skills, such as “CRM” and “Security”.</li>
+        <li>Leakage control: data split by job (80/10/10, fixed seed), so no job appears in both training and test.</li>
+      </ul>
+      <p class="note">Limits: all CVs are synthetic or LLM-rewritten, and relevance labels come from rules or an LLM, not human experts. The numbers show progress on these sets, not accuracy on real users.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap sec">
+    <div class="tag">03 / LLMs &amp; prompts</div>
+    <div class="stack">
+      <h2>LLMs built and checked the test data, with guardrails against made-up content</h2>
+      <div class="facts">
+        <div class="card"><span class="big">9 models</span><h3>Model selection</h3><p>Compared 9 free LLMs on OpenRouter on the same two tasks before choosing which to use.</p></div>
+        <div class="card"><span class="big">5,252 pairs</span><h3>LLM-as-a-judge</h3><p>Re-labeled JD–CV pairs on a 0/1/2 scale with reasons. Agreement with rule labels: 91.4% on training pairs, 84.4% on the 500 hand-label pairs.</p></div>
+        <div class="card"><span class="big">365 removed</span><h3>Cleaner training data</h3><p>Dropped 11.5% of training triplets the judge flagged as mislabeled. The judge also exposed a bug in the CV generator, fixed at the source.</p></div>
+        <div class="card"><span class="big">281 kept</span><h3>Hallucination checks</h3><p>Prompted the LLM to rewrite test CVs naturally. Automatic checks rejected any rewrite that added skills, changed names or switched language.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap sec">
+    <div class="tag">04 / Software testing</div>
+    <div class="stack">
+      <h2>67 requirement-based test cases, automated and traced to requirements</h2>
+      <p>Black-box design with equivalence partitioning, boundary values and state-transition testing. Cases cover roles and ownership, expired holds, repeated requests and wrong payment amounts. A case passes only when the response code, returned data and stored state all match.</p>
+      <div class="facts">
+        <div class="card"><h3>Integration · pytest</h3><p>145 tests from 13 files through FastAPI TestClient: permissions, application states, concurrent interview booking, idempotent payment webhooks, refunds.</p></div>
+        <div class="card"><h3>System · Playwright</h3><p>11 browser scenarios on Microsoft Edge: VietQR order, simulated webhook, resent webhook not extending Premium twice, underpayment sent to reconciliation.</p></div>
+        <div class="card"><h3>CI · GitHub Actions</h3><p>Backend and frontend workflows: dependencies, migrations, lint, API contract check, pytest and build.</p></div>
+      </div>
+      <h3>Defect log</h3>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>ID</th><th>Found by</th><th>Problem</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">BUG-01</td><td class="mono">ST-10</td><td>Job API accepted negative salary and min &gt; max, returning 200 instead of 422</td><td><span class="pill pass">fixed</span></td></tr>
+            <tr><td class="mono">BUG-02</td><td class="mono">UI-09</td><td>Admin payment list showed orders outside the chosen filter: a stale response overwrote the new one</td><td><span class="pill pass">fixed</span></td></tr>
+            <tr><td class="mono">BUG-03</td><td class="mono">UI-09</td><td>Admin page used a different order status name from the specification</td><td><span class="pill pass">fixed</span></td></tr>
+            <tr><td class="mono">BUG-04</td><td>Test setup</td><td>Test config did not disable SMTP, so email tests sent real mail and failed</td><td><span class="pill pass">fixed</span></td></tr>
+            <tr><td class="mono">BUG-05</td><td>Contract check</td><td>API spec file was missing new endpoints</td><td><span class="pill pass">fixed</span></td></tr>
+            <tr><td class="mono">BUG-06</td><td>Deployment</td><td>Worker kept an empty SMTP password from an old image, so reset emails never arrived</td><td><span class="pill pass">fixed</span></td></tr>
+            <tr><td class="mono">BUG-07</td><td>Deployment</td><td>Password-reset link pointed to the old dev port</td><td><span class="pill pass">fixed</span></td></tr>
+            <tr><td class="mono">BUG-08</td><td class="mono">UI-04</td><td>A demo company logo URL is blocked by the browser</td><td><span class="pill open">open</span></td></tr>
+            <tr><td class="mono">BUG-09</td><td class="mono">UI-11</td><td>On a 503, the reset page shows the error twice</td><td><span class="pill open">open</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap sec">
+    <div class="tag">05 / Other work</div>
+    <div class="stack">
+      <h2>Work Management System</h2>
+      <p class="mono note">Product / Business Analyst · Academic team project · July 2026 – present</p>
+      <ul class="plain">
+        <li>Defined requirements, user stories and acceptance criteria for backlog, sprint and task management.</li>
+        <li>Designed UML diagrams (use case, activity, sequence, class) and business rules for task lifecycles.</li>
+        <li>Worked in an Agile/Scrum team: backlog refinement, sprint planning and team discussions.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap sec">
+    <div class="tag">06 / Certificates</div>
+    <div class="certs">
+      <div class="cert"><div><b>Introduction to Software Testing</b><small>University of Minnesota · Coursera · May 2026</small></div><a href="https://coursera.org/verify/WQQXU5829FCF">Verify</a></div>
+      <div class="cert"><div><b>Black-box and White-box Testing</b><small>University of Minnesota · Coursera · Jun 2026</small></div><a href="https://coursera.org/verify/E65N49BQGVU4">Verify</a></div>
+      <div class="cert"><div><b>Web and Mobile Testing with Selenium</b><small>University of Minnesota · Coursera · Jun 2026</small></div><a href="https://coursera.org/verify/0CGBR0O9GLN9">Verify</a></div>
+      <div class="cert"><div><b>Google Project Management</b><small>Foundations of Project Management · Agile Project Management · Project Planning · Coursera · 2026</small></div></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">Do Trinh Le Quyen · dotrinhlequyen@gmail.com · <a href="https://github.com/dotrinhlequyen-1905">github.com/dotrinhlequyen-1905</a></div>
+</footer>
+</body>
+</html>
